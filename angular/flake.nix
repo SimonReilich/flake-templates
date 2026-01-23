@@ -1,11 +1,12 @@
 {
-  # description = "description";
+  description = "description";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs =
+    { self, nixpkgs }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -15,72 +16,82 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgsFor = system: import nixpkgs { inherit system; };
-      name = "name";
-      version = "version";
+      name = "portfolio";
+      version = "0.1.0";
     in
     {
-      packages = forAllSystems (system:
+      packages = forAllSystems (
+        system:
         let
           pkgs = pkgsFor system;
-
-          frontend = pkgs.buildNpmPackage {
-            pname = "${name}-frontend";
-            version = version;
-            src = ./frontend;
-            npmDepsHash = "";
-            NG_CLI_ANALYTICS = "false";
-            npmBuildScript = "build";
-            installPhase = ''
-              mkdir -p $out
-              cp -r dist/frontend/browser/* $out/
-            '';
-          };
         in
         {
-          default = pkgs.rustPlatform.buildRustPackage {
+          default = pkgs.buildNpmPackage {
             pname = name;
             version = version;
-            src = ./backend;
-            cargoHash = "";
-            FRONTEND_DIST = "${frontend}";
+            src = ./.;
 
-            nativeBuildInputs = [ pkgs.pkg-config ];
-            buildInputs = [ pkgs.openssl ];
+            npmDepsHash = "sha256-F3uW1FEhb15Rj/+DdSbzs2NsYpPpzRH6R3WKPENFB0A=";
+
+            NG_CLI_ANALYTICS = "false";
+
+            npmBuildScript = "build";
+            installPhase = ''
+              mkdir -p $out/share/www
+
+              cp -r dist/${name}/browser/* $out/share/www/
+
+              mkdir -p $out/bin
+              cat <<EOF > $out/bin/${name}
+              #!/bin/sh
+              echo "Starting server at http://localhost:8080"
+              # We serve the flattened www directory
+              ${pkgs.python3}/bin/python3 -m http.server 8080 --directory $out/share/www
+              EOF
+              chmod +x $out/bin/${name}
+            '';
           };
-
-          frontend = frontend;
         }
       );
 
-      apps = forAllSystems (system:
+      apps = forAllSystems (
+        system:
         let
           pkgs = pkgsFor system;
+          devScript = pkgs.writeShellScriptBin "run-dev" ''
+            ng serve
+          '';
         in
         {
           default = {
             type = "app";
             program = "${self.packages.${system}.default}/bin/${name}";
             meta = {
-              # description = "description";
+              description = "description";
+            };
+          };
+          dev = {
+            type = "app";
+            program = "${devScript}/bin/run-dev";
+            meta = {
+              description = "live-reloding for development";
             };
           };
         }
       );
 
-      devShells = forAllSystems (system:
+      devShells = forAllSystems (
+        system:
         let
           pkgs = pkgsFor system;
         in
         {
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
-              cargo
-              rustc
               nodejs_20
               nodePackages.npm
               nodePackages."@angular/cli"
               pkg-config
-              openssl
             ];
 
             shellHook = ''

@@ -1,4 +1,6 @@
 {
+  # description = "description";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
   };
@@ -6,21 +8,14 @@
   outputs =
     { self, nixpkgs, ... }:
     let
-      systems = [
+      supportedSystems = [
         "x86_64-linux"
-        "x86_64-darwin"
         "aarch64-linux"
+        "x86_64-darwin"
         "aarch64-darwin"
       ];
-      devSystem = "x86_64-linux";
-      forAllSystems =
-        f:
-        builtins.listToAttrs (
-          map (system: {
-            name = system;
-            value = f system;
-          }) systems
-        );
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgsFor = system: import nixpkgs { inherit system; };
       name = "name";
       version = "version";
     in
@@ -28,7 +23,7 @@
       packages = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = pkgsFor system;
         in
         {
           default = pkgs.stdenv.mkDerivation {
@@ -53,7 +48,7 @@
       );
 
       checks = forAllSystems (system: {
-        package = self.packages.${system}.default;
+        package = pkgsFor system;
       });
 
       apps = forAllSystems (system: {
@@ -66,28 +61,31 @@
         };
       });
 
-      devShells.${devSystem}.default =
-        let
-          pkgs = nixpkgs.legacyPackages.${devSystem};
+      devShells = forAllSystems (system: {
+        default =
+          let
+            pkgs = pkgsFor system;
 
-          ghcWithPackages = (pkgs.haskellPackages.ghcWithPackages (
-            p: with p; [
-              # Add Haskell Packages here
-            ]
-          ));
-        in
-        pkgs.mkShell {
-          packages = [
-            ghcWithPackages
-            pkgs.haskell-language-server
-            pkgs.haskellPackages.hoogle
-            pkgs.ormolu
-          ];
-          shellHook = ''
-            echo -e "\nloaded haskell environment with Glasgow Haskell Compiler ${ghcWithPackages.version}\n"
-            rm hie.yaml
-            printf "cradle:\n  direct:\n    arguments:\n      - \"-iapp\"\n      - \"Main.hs\"" >> hie.yaml
-          '';
-        };
+            ghcWithPackages = (
+              pkgs.haskellPackages.ghcWithPackages (
+                p: with p; [
+                  # Add Haskell Packages here
+                ]
+              )
+            );
+          in
+          pkgs.mkShell {
+            packages = [
+              ghcWithPackages
+              pkgs.haskell-language-server
+              pkgs.haskellPackages.hoogle
+              pkgs.ormolu
+            ];
+            shellHook = ''
+              rm hie.yaml
+              printf "cradle:\n  direct:\n    arguments:\n      - \"-iapp\"\n      - \"Main.hs\"" >> hie.yaml
+            '';
+          };
+      });
     };
 }
