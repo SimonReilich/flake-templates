@@ -1,5 +1,5 @@
 {
-  description = "description";
+  # description = "description";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -31,7 +31,7 @@
             version = version;
             src = ./.;
 
-            npmDepsHash = "sha256-F3uW1FEhb15Rj/+DdSbzs2NsYpPpzRH6R3WKPENFB0A=";
+            npmDepsHash = "";
 
             NG_CLI_ANALYTICS = "false";
 
@@ -67,7 +67,7 @@
             type = "app";
             program = "${self.packages.${system}.default}/bin/${name}";
             meta = {
-              description = "description";
+              # description = "description";
             };
           };
           dev = {
