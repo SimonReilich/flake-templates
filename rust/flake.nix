@@ -16,7 +16,7 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgsFor = system: import nixpkgs { inherit system; };
       name = "name";
-      version = "version";
+      version = "v1.0.0";
     in
     {
       packages = forAllSystems (system:
@@ -62,7 +62,7 @@
             shellHook = ''
               if [ ! -d ./src ]; then
                 # Create new Cargo Project on first Enter
-                # cargo init
+                cargo init
               fi
             '';
           };

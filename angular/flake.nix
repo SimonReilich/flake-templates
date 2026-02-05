@@ -97,7 +97,7 @@
             shellHook = ''
               if [ ! -d ./frontend ]; then
                 # Create Angular Project on first Enter
-                # ng new frontend
+                ng new ${name} --directory ./
               fi
             '';
           };

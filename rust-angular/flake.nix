@@ -16,7 +16,7 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgsFor = system: import nixpkgs { inherit system; };
       name = "name";
-      version = "version";
+      version = "v1.0.0";
     in
     {
       packages = forAllSystems (system:
@@ -96,12 +96,12 @@
             shellHook = ''
               if [ ! -d ./frontend ]; then
                 # Create Angular Project on first Enter
-                # ng new frontend
+                ng new frontend
               fi
 
               if [ ! -d ./backend ]; then
                 # Create new Cargo Project on first Enter
-                # cargo init backend
+                cargo init backend
               fi
             '';
           };
