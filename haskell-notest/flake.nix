@@ -84,6 +84,11 @@
             shellHook = ''
               rm hie.yaml
               printf "cradle:\n  direct:\n    arguments:\n      - \"-iapp\"\n      - \"Main.hs\"" >> hie.yaml
+
+              if [ ! -d ./app ]; then
+                mkdir app
+                touch ./app/Main.hs
+              fi
             '';
           };
       });

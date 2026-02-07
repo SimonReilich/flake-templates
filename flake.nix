@@ -3,13 +3,6 @@
 
   outputs =
     { self, nixpkgs, ... } @ args:
-    let
-      projectName =
-        if args ? name then
-          args.name
-        else
-          throw "Error: The 'name' argument is required for this template. Please use '--argstr name <your-project-name>'";
-    in
     {
       templates = {
         angular = {

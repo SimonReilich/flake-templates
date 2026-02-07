@@ -16,8 +16,8 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgsFor = system: import nixpkgs { inherit system; };
-      name = "portfolio";
-      version = "0.1.0";
+      name = "name";
+      version = "v0.1.0";
     in
     {
       packages = forAllSystems (
@@ -95,7 +95,7 @@
             ];
 
             shellHook = ''
-              if [ ! -d ./frontend ]; then
+              if [ ! -f angular.json ]; then
                 # Create Angular Project on first Enter
                 ng new ${name} --directory ./
               fi

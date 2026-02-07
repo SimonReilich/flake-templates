@@ -60,7 +60,7 @@
             ];
 
             shellHook = ''
-              if [ ! -d ./src ]; then
+              if [ ! -f Cargo.toml ]; then
                 # Create new Cargo Project on first Enter
                 cargo init
               fi

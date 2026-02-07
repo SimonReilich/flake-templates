@@ -97,6 +97,8 @@
               if [ ! -d ./frontend ]; then
                 # Create Angular Project on first Enter
                 ng new frontend
+                rm -rf ./frontend/.git
+                rm ./frontend/.gitignore
               fi
 
               if [ ! -d ./backend ]; then
