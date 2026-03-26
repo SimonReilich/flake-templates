@@ -12,3 +12,6 @@
 *.snm
 *.synctex.gz
 *.toc
+
+result
+.envrc
