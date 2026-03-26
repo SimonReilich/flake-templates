@@ -25,6 +25,14 @@
             Do not forget to change the attribute "name" in flake.nix!
           '';
         };
+        presentation = {
+          path = ./presentation;
+          description = "Flake for LaTeX Beamer presentations";
+          welcomeText = ''
+            
+            Initialized Flake for LaTeX Beamer presentation.
+          '';
+        };
         rust = {
           path = ./rust;
           description = "Flake for Rust development";
