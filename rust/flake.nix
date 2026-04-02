@@ -27,7 +27,7 @@
           default = pkgs.rustPlatform.buildRustPackage {
             pname = name;
             version = version;
-            src = /.;
+            src = ./.;
             cargoHash = "";
           };
         }
