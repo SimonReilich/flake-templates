@@ -40,12 +40,19 @@
             Initialized Flake for LaTeX Beamer presentation.
           '';
         };
+        r-lang = {
+          path = ./r-lang;
+          description = "Devenv files for projects with R and R-Studio";
+          welcomeText = ''
+            Initialized devenv.nix for R.
+          '';
+        };
         rust = {
           path = ./rust;
           description = "Flake for Rust development";
           welcomeText = ''
             
-            Initialized Flake for Haskell development (with testing).
+            Initialized Flake for RUST development.
             
             Do not forget to change the attribute "name" in flake.nix!
           '';
