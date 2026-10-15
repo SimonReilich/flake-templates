@@ -15,6 +15,13 @@
             Do not forget to change the attribute "name" in flake.nix!
           '';
         };
+        eidip = {
+          path = ./eidip;
+          description = "Devenv files for exercises in the EidIP course (CIT123001)";
+          welcomeText = ''
+            Initialized devenv.nix for EidIP.
+          '';
+        };
         haskell-notest = {
           path = ./haskell-notest;
           description = "Flake for Haskell, without tests";
