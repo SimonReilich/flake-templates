@@ -32,6 +32,13 @@
             Do not forget to change the attribute "name" in flake.nix!
           '';
         };
+        julia = {
+          path = ./julia;
+          description = "Devenv files for Julia";
+          welcomeText = ''
+            Initialized devenv.nix for Julia.
+          '';
+        };
         presentation = {
           path = ./presentation;
           description = "Flake for LaTeX Beamer presentations";
